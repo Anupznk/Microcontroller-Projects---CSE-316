@@ -10,6 +10,7 @@
 #define F_CPU 1000000
 #include <util/delay.h>
 
+// create your image here and don't worry about anything else
 void resetRows(unsigned char rowSetup[]){
 	rowSetup [0] = 0;
 	rowSetup [1] = 0b00000010;
@@ -41,7 +42,6 @@ void renderSmiley(int shift){
 
 	unsigned char delayMS = 6;
 	
-	// make your image here and remember to reset it properly
 	unsigned char rowSetup [8];
 	unsigned char colSetup [8];
 	resetCols(colSetup);
@@ -100,7 +100,6 @@ void renderSmiley(int shift){
 		}
 		
 		if(shift == 3){
-			// shift down image
 			for(int i = 0; i < 7; i++){
 				rowSetup[i] = rowSetup[i] << 1;
 			}
@@ -114,7 +113,6 @@ void renderSmiley(int shift){
 		}
 		
 		if(shift == 4){
-			// shift up image
 			for(int i = 0; i < 7; i++){
 				rowSetup[i] = rowSetup[i] >> 1;
 			}
