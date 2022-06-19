@@ -2,27 +2,52 @@
  * LED_matrix.c
  *
  * Created: 6/17/2022 6:16:41 PM
- * Author : Anup Bhowmik
+ * Author : Anup
  */ 
 
 #include <avr/io.h>
 #include <stdio.h>
 #define F_CPU 1000000
 #include <util/delay.h>
+#define F_CPU 1000000
+
+void resetRows(unsigned char rowSetup[]){
+	rowSetup [0] = 0;
+	rowSetup [1] = 0b00000010;
+	rowSetup [2] = 0b00000100;
+	rowSetup [3] = 0;
+	rowSetup [4] = 0b00010000;
+	rowSetup [5] = 0b00100000;
+	rowSetup [6] = 0;
+	rowSetup [7] = 0;
+}
+
+void resetCols(unsigned char colSetup[]){
+	colSetup [0] = 0xFF;
+	colSetup [1] = 0x99;
+	colSetup [2] = 0x99;
+	colSetup [3] = 0xFF;
+	colSetup [4] = 0xBD;
+	colSetup [5] = 0xC3;
+	colSetup [6] = 0xFF;
+	colSetup [7] = 0xFF;
+}
 
 void renderSmiley(int shift){
 	// shift = 0 -> no shift
 	// shift = 1 -> left shift
 	// shift = 2 -> right shift
-	// shift = 3 -> shift down
-	// shift = 4 -> shift up
+	// shift = 3 -> left down
+	// shift = 4 -> right up
 
 	unsigned char delayMS = 6;
 	
 	// make your image here and remember to reset it properly
-	unsigned char rowSetup [8] = {0, 0b00000010, 0b00000100, 0, 0b00010000, 0b00100000, 0, 0};
-	unsigned char colSetup [8] = {0xFF, 0x99, 0x99, 0xFF, 0xBD, 0xC3, 0xFF, 0xFF};
-	// int shiftDelayMS = 100;
+	unsigned char rowSetup [8];
+	unsigned char colSetup [8];
+	resetCols(colSetup);
+	resetRows(rowSetup);
+
 	unsigned char shiftCou = 0;
 	
 	unsigned char mask = 0b11111111;
@@ -52,14 +77,7 @@ void renderSmiley(int shift){
 				// reset
 				shiftCou = 0;
 				mask = 0b11111111;
-				colSetup [0] = 0xFF;
-				colSetup [1] = 0x99;
-				colSetup [2] = 0x99;
-				colSetup [3] = 0xFF;
-				colSetup [4] = 0xBD;
-				colSetup [5] = 0xC3;
-				colSetup [6] = 0xFF;
-				colSetup [7] = 0xFF;
+				resetCols(colSetup);
 			}
 			_delay_ms(delayMS);
 		}
@@ -77,14 +95,7 @@ void renderSmiley(int shift){
 				// reset
 				shiftCou = 0;
 				mask = 0b11111111;
-				colSetup [0] = 0xFF;
-				colSetup [1] = 0x99;
-				colSetup [2] = 0x99;
-				colSetup [3] = 0xFF;
-				colSetup [4] = 0xBD;
-				colSetup [5] = 0xC3;
-				colSetup [6] = 0xFF;
-				colSetup [7] = 0xFF;
+				resetCols(colSetup);
 			}
 			_delay_ms(delayMS);
 		}
@@ -98,14 +109,7 @@ void renderSmiley(int shift){
 			if(shiftCou == 10){
 				// reset
 				shiftCou = 0;
-				rowSetup [0] = 0;
-				rowSetup [1] = 0b00000010;
-				rowSetup [2] = 0b00000100;
-				rowSetup [3] = 0;
-				rowSetup [4] = 0b00010000;
-				rowSetup [5] = 0b00100000;
-				rowSetup [6] = 0;
-				rowSetup [7] = 0;
+				resetRows(rowSetup);
 			}
 			_delay_ms(delayMS);
 		}
@@ -119,14 +123,7 @@ void renderSmiley(int shift){
 			if(shiftCou == 10){
 				// reset
 				shiftCou = 0;
-				rowSetup [0] = 0;
-				rowSetup [1] = 0b00000010;
-				rowSetup [2] = 0b00000100;
-				rowSetup [3] = 0;
-				rowSetup [4] = 0b00010000;
-				rowSetup [5] = 0b00100000;
-				rowSetup [6] = 0;
-				rowSetup [7] = 0;
+				resetRows(rowSetup);
 			}
 			_delay_ms(delayMS);
 		}
@@ -137,7 +134,7 @@ int main(void)
 {
     DDRD = 0xFF;
 	DDRC = 0xFF;
-	renderSmiley(4);
+	renderSmiley(3);
     while (1) 
     {
 		
