@@ -9,7 +9,6 @@
 #include <stdio.h>
 #define F_CPU 1000000
 #include <util/delay.h>
-#define F_CPU 1000000
 
 void resetRows(unsigned char rowSetup[]){
 	rowSetup [0] = 0;
