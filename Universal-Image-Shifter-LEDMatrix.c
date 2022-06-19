@@ -2,22 +2,20 @@
  * LED_matrix.c
  *
  * Created: 6/17/2022 6:16:41 PM
- * Author : Anup
+ * Author : Anup Bhowmik
  */ 
 
 #include <avr/io.h>
 #include <stdio.h>
 #define F_CPU 1000000
 #include <util/delay.h>
-#define F_CPU 1000000
-
 
 void renderSmiley(int shift){
 	// shift = 0 -> no shift
 	// shift = 1 -> left shift
 	// shift = 2 -> right shift
-	// shift = 3 -> left down
-	// shift = 4 -> right up
+	// shift = 3 -> shift down
+	// shift = 4 -> shift up
 
 	unsigned char delayMS = 6;
 	
