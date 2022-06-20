@@ -12,34 +12,35 @@
 
 // create your image here and don't worry about anything else
 void resetRows(unsigned char rowSetup[]){
-	rowSetup [0] = 0;
+	rowSetup [0] = 0b00000001;
 	rowSetup [1] = 0b00000010;
 	rowSetup [2] = 0b00000100;
-	rowSetup [3] = 0;
+	rowSetup [3] = 0b00001000;
 	rowSetup [4] = 0b00010000;
 	rowSetup [5] = 0b00100000;
-	rowSetup [6] = 0;
+	rowSetup [6] = 0b01000000;
 	rowSetup [7] = 0;
 }
 
 void resetCols(unsigned char colSetup[]){
-	colSetup [0] = 0xFF;
-	colSetup [1] = 0x99;
-	colSetup [2] = 0x99;
-	colSetup [3] = 0xFF;
-	colSetup [4] = 0xBD;
-	colSetup [5] = 0xC3;
-	colSetup [6] = 0xFF;
-	colSetup [7] = 0xFF;
+	colSetup [0] = 0b00111100;
+	colSetup [1] = 0b00000100;
+	colSetup [2] = 0b00000100;
+	colSetup [3] = 0b00111100;
+	colSetup [4] = 0b00000100;
+	colSetup [5] = 0b00000100;
+	colSetup [6] = 0b00111100;
+	colSetup [7] = 0;
 }
 
-void renderSmiley(int shift){
-	// shift = 0 -> no shift
-	// shift = 1 -> left shift
-	// shift = 2 -> right shift
-	// shift = 3 -> left down
-	// shift = 4 -> right up
-
+void renderImage(int shift){
+	// shift = 0	no shift
+	// shift = 1	left shift
+	// shift = 2	right shift
+	// shift = 3	up shift
+	// shift = 4	down shift
+	// shift = 4	diagonal shift
+	
 	unsigned char delayMS = 6;
 	
 	unsigned char rowSetup [8];
@@ -47,94 +48,64 @@ void renderSmiley(int shift){
 	resetCols(colSetup);
 	resetRows(rowSetup);
 
-	unsigned char shiftCou = 0;
 	
-	unsigned char mask = 0b11111111;
-	
-	while(1){
-		// PORTC te row connection, so, on thakle oi row on hobe
-		// PORTD te jegula off, sei col gula jolbe
-		
+	while (1)
+	{
 		for(int i = 0; i < 7; i++){
-			PORTC = rowSetup[i];
-			PORTD = colSetup[i];
+			for(int j=0; j<50; j++){
+				PORTB = rowSetup[i];
+				PORTD = ~colSetup[i];
+			}
 			_delay_ms(delayMS);
 		}
-			
-		shiftCou++;
-		if(shift == 1){
-			mask = mask << 1;
-			mask = ~mask;
-			for(int i = 0; i < 7; i++){
-				colSetup[i] = colSetup[i] << 1;	// here by left shifting, the lsb is becoming 0, thus turning on
-				colSetup[i] = colSetup[i] | mask;
-			}
 
-			mask = ~mask;
-			
-			if(shiftCou == 10){
-				// reset
-				shiftCou = 0;
-				mask = 0b11111111;
-				resetCols(colSetup);
-			}
-			_delay_ms(delayMS);
-		}
-		if(shift == 2){
-			
-			mask = mask >> 1;
-			mask = ~mask;
+		if(shift == 1){
 			for(int i = 0; i < 7; i++){
-				colSetup[i] = colSetup[i] >> 1;	// here by left shifting, the msb is becoming 0, thus turning on
-				colSetup[i] = colSetup[i] | mask;
+				colSetup[i] = (colSetup[i] << 1 | colSetup[i] >> 7);
 			}
-			
-			mask = ~mask;
-			if(shiftCou == 10){
-				// reset
-				shiftCou = 0;
-				mask = 0b11111111;
-				resetCols(colSetup);
+		}
+		
+		if(shift == 2){
+			for(int i = 0; i < 7; i++){
+				colSetup[i] = (colSetup[i] >> 1 | colSetup[i] << 7);
 			}
-			_delay_ms(delayMS);
 		}
 		
 		if(shift == 3){
 			for(int i = 0; i < 7; i++){
-				rowSetup[i] = rowSetup[i] << 1;
+				rowSetup[i] = (rowSetup[i] >> 1 | rowSetup[i] << 7);
 			}
-			
-			if(shiftCou == 10){
-				// reset
-				shiftCou = 0;
-				resetRows(rowSetup);
-			}
-			_delay_ms(delayMS);
 		}
+		
 		
 		if(shift == 4){
 			for(int i = 0; i < 7; i++){
-				rowSetup[i] = rowSetup[i] >> 1;
+				rowSetup[i] = (rowSetup[i] << 1 | rowSetup[i] >> 7);
 			}
-			
-			if(shiftCou == 10){
-				// reset
-				shiftCou = 0;
-				resetRows(rowSetup);
+		}
+		
+		if(shift == 5){
+			for(int i = 0; i < 7; i++){
+				rowSetup[i] = (rowSetup[i] << 1 | rowSetup[i] >> 7);
+				colSetup[i] = (colSetup[i] << 1 | colSetup[i] >> 7);
 			}
-			_delay_ms(delayMS);
 		}
 	}
+	
 }
+
+
 
 int main(void)
 {
-    DDRD = 0xFF;
-	DDRC = 0xFF;
-	renderSmiley(3);
-    while (1) 
-    {
-		
-    }
+    	DDRD = 0xFF;
+	DDRB = 0xFF;
+
+	renderImage(1);
+	while (1){
+
+	}
+	
+	
 }
 
