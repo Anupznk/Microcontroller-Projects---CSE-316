@@ -19,7 +19,7 @@ void resetRows(unsigned char rowSetup[]){
 	rowSetup [4] = 0b00010000;
 	rowSetup [5] = 0b00100000;
 	rowSetup [6] = 0b01000000;
-	rowSetup [7] = 0;
+	rowSetup [7] = 0b00000000;
 }
 
 void resetCols(unsigned char colSetup[]){
@@ -30,7 +30,7 @@ void resetCols(unsigned char colSetup[]){
 	colSetup [4] = 0b00000100;
 	colSetup [5] = 0b00000100;
 	colSetup [6] = 0b00111100;
-	colSetup [7] = 0;
+	colSetup [7] = 0b00000000;
 }
 
 void renderImage(int shift){
@@ -39,7 +39,7 @@ void renderImage(int shift){
 	// shift = 2	right shift
 	// shift = 3	up shift
 	// shift = 4	down shift
-	// shift = 4	diagonal shift
+	// shift = 5	diagonal shift
 	
 	unsigned char delayMS = 6;
 	
